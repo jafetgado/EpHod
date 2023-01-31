@@ -1,6 +1,5 @@
 **/.DS_store
 env
 gitcommands.sh
-.gitconfig
 example.py
 evaluate
