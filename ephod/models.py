@@ -1,4 +1,4 @@
-"""Modular classes for building and running EpHod model
+"""Modular functions/classes for building and running EpHod model
 Author: Japheth Gado
 """
 
