@@ -1,4 +1,5 @@
 **/.DS_store
+**/*~
 env
 gitcommands.sh
 example.py
