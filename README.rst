@@ -14,7 +14,6 @@ Usage
     conda activate ./env
 
     # Predict pHopt with EpHod language (needs gpu)
-    
     python ./ephod/runner.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
@@ -26,7 +25,6 @@ Usage
     # Or predict with a simple learning regression model 
     # (support vector regression with amino acid composition)
     # Less accurate but a very fast estimation for wild type enzymes with CPU
-	
     python ./ephod/runner.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
