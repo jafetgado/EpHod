@@ -178,7 +178,7 @@ class EpHodModel():
 
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         if self.device != 'cuda':
-            print('WARNING: You are not using a cpu which will be very slow.')
+            print('WARNING: You are not using a GPU which will be very slow.')
         self.esm1v_model, self.esm1v_batch_converter = self.load_ESM1v_model()
         self.rlat_model = self.load_RLAT_model()
         _ = self.esm1v_model.eval()
