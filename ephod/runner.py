@@ -83,7 +83,7 @@ def predict_aac_svr(args, accessions, sequences):
     stats = pd.read_csv(stats_path, index_col=0)
     means, stds = stats['means'].values, stats['stds'].values
     
-    # Amino acid composition of sequences
+    # Predict pHopt from amino acid composition of sequences with SVR
     aac = np.array([utils.get_amino_composition(seq) for seq in sequences])
     aac = (aac - means) / (stds + 1e-8)
     ypred = aac_svr_model.predict(aac)
