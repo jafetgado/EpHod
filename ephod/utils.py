@@ -100,3 +100,4 @@ def get_amino_composition(seq, normalize=True):
 
     return aac
 
+
