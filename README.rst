@@ -23,7 +23,7 @@ Usage
         --save_attention_weights 1 \
         --save_embeddings 1 
     
-    # Or predict with a simple machine learning regression model 
+    # Or predict with a simple learning regression model 
     # (support vector regression with amino acid composition)
     # Less accurate but a very fast estimation for wild type enzymes with CPU
 	
