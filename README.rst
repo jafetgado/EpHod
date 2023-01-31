@@ -8,6 +8,7 @@ Usage
 -------------
 .. code:: shell-session
 
+    # Clone repository and install conda environment
     git clone https://github.com/jafetgado/EpHod.git
     cd EpHod
     conda env create -f ./env.yml -p ./env
