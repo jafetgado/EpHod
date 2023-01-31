@@ -1,0 +1,14 @@
+
+
+# Install conda environment
+'''
+conda env create -f ./env.yml -p ./env
+conda activate ./env
+'''
+
+
+# Run prediction (EpHod)
+python ./ephod/runner.py --fasta_path "./validation.fasta" --save_dir ./output --batch_size 8 --verbose 1 --save_attention_weights 1 --save_embeddings 1
+
+# Run prediction (AAC-SVR)
+python ./ephod/runner.py --fasta_path "./validation.fasta" --save_dir ./svr_pred --aac_svr 1 --verbose 1 
