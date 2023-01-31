@@ -16,8 +16,8 @@ Usage
     # Predict pHopt with EpHod language (needs gpu)
     
     python ./ephod/runner.py \
-        --fasta_path "./validation.fasta" \
-        --save_dir ./output \
+        --fasta_path "./example/sequences.fasta" \
+        --save_dir ./example \
         --batch_size 8 \
         --verbose 1 \
         --save_attention_weights 1 \
@@ -27,9 +27,9 @@ Usage
     # (support vector regression with amino acid composition)
     # Less accurate but a very fast estimation for wild type enzymes with CPU
 	
-    #python ./ephod/runner.py \
-        --fasta_path "./validation.fasta" \
-        --save_dir ./svr_pred \
+    python ./ephod/runner.py \
+        --fasta_path "./example/sequences.fasta" \
+        --save_dir ./example \
         --aac_svr 1 \
         --verbose 1 
 ..
