@@ -40,4 +40,4 @@ Citation
 ----------
 If you find EpHod useful, please cite the following:
 
-Gado JE, Shaw AY, et al, 2023. "Predicting enzyme optimum pH with deep language models".
+Gado J.E., Shaw A.Y., et al, 2023. "Predicting enzyme optimum pH with deep language models".
