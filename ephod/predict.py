@@ -110,7 +110,7 @@ def main():
     assert len(accessions) == len(sequences), 'Fasta file has unequal headers and sequences'
     numseqs = len(sequences)
     if args.verbose:
-        print(f'Read {numseqs} sequences from {args.fasta_path}')
+        print(f'Reading {numseqs} sequences from {args.fasta_path}')
     
     
     # Prepare files/directories for writing predictions

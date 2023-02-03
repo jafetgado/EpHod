@@ -205,6 +205,7 @@ class EpHodModel():
         emb = self.esm1v_model(batch_tokens, repr_layers=[33], return_contacts=False)
         emb = emb["representations"][33]
         emb = emb.transpose(2,1) # From (batch, seqlen, features) to (batch, features, seqlen)
+        emb = emb.to(self.device)
 
         return emb
     
@@ -227,6 +228,7 @@ class EpHodModel():
         model = ResidualLightAttention(**params)
         model = DataParallel(model)
         model.load_state_dict(checkpoint['model_state_dict'], strict=True)
+        model = model.to(self.device)
 
         return model
 
@@ -239,6 +241,7 @@ class EpHodModel():
         masks = [[1] * len(seqs[i]) + [0] * (maxlen - len(seqs[i])) \
                  for i in range(len(seqs))]
         masks = torch.tensor(masks, dtype=torch.int32)
+        masks = masks.to(self.device)
         output = self.rlat_model(emb_esm1v, masks) # (ypred, emb_ephod, attention_weights)
         
         return output
