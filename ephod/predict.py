@@ -182,7 +182,7 @@ def main():
         
     # Save predictions
     all_ypred = pd.DataFrame({'Accessions': accessions, 
-                              'pHopt': all_ypred}).transpose()
+                              'pHopt': all_ypred})
     all_ypred.to_csv(phout_file)
     
     
