@@ -35,8 +35,10 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Predict pHopt of enzymes with EpHod")
     parser.add_argument('--fasta_path', type=str,  
                         help='Path to fasta file of enzyme sequences')
-    parser.add_argument('--save_dir', type=str, default='./ephod_output',
-                        help='Directory to which output/results will be written')
+    parser.add_argument('--save_dir', type=str, default='./',
+                        help='Directory to which prediction results will be written')
+    parser.add_argument('--csv_name', type=str, default='prediction.csv', 
+                        help='Name of csv file to which prediction results will be written')
     parser.add_argument('--aac_svr', type=int, default=0, 
                         help='If 1, use the simple AAC-SVR model instead of EpHod')
     parser.add_argument('--batch_size', type=int, default=8,
@@ -45,7 +47,7 @@ def parse_arguments():
                         help='Whether to print out prediction progress to terminal')
     parser.add_argument('--save_attention_weights', default=0, type=int,
                         help="Whether to write EpHod attention weights for each sequence")
-    parser.add_argument('--save_embeddings', default=1, type=int,
+    parser.add_argument('--save_embeddings', default=0, type=int,
                         help="Whether to save 2560-dim EpHod embeddings for each sequence")
     args = parser.parse_args()
 
@@ -119,7 +121,7 @@ def main():
         os.makedirs(args.save_dir)
         
     # Prediction output file
-    phout_file = f'{args.save_dir}/prediction.csv'
+    phout_file = f'{args.save_dir}/{args.csv_name}.csv'
     
 
     if args.aac_svr:
