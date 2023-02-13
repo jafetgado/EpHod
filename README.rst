@@ -11,9 +11,10 @@ Usage
     # Clone repository and install conda environment
     git clone https://github.com/jafetgado/EpHod.git
     cd EpHod
+    export PYTHONPATH="$(pwd)"
     conda env create -f ./env.yml -p ./env
-    conda activate ./env
-
+    conda activate ./env	
+	
     # Predict pHopt with EpHod language (needs gpu)
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
