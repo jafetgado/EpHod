@@ -18,10 +18,11 @@ Usage
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
+        --csv_name predictions.csv \
         --batch_size 8 \
         --verbose 1 \
-        --save_attention_weights 1 \
-        --save_embeddings 1 
+        --save_attention_weights 0 \
+        --save_embeddings 0 
     
     # Or predict with a simple regression model 
     # (support vector regression with amino acid composition)
@@ -29,6 +30,7 @@ Usage
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
+        --csv_name prediction.csv \
         --aac_svr 1 \
         --verbose 1 
 ..
