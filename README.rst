@@ -23,6 +23,7 @@ Usage
         --batch_size 8 \
         --verbose 1 \
         --save_attention_weights 0 \
+        --attention_mode "None" \
         --save_embeddings 0 
     
     # Or predict with a simple regression model 
