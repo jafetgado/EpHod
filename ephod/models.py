@@ -122,9 +122,9 @@ class LightAttention(nn.Module):
         if mask is None:
             mask = torch.ones(x.shape[0], x.shape[2], dtype=torch.int32)  # Don't mask out
         values = self.values_conv(x)
-        values = values.masked_fill(mask[:,None,:]==0, -1e-6)
+        values = values.masked_fill(mask[:,None,:]==0, -1e6)
         weights = self.weights_conv(x)
-        weights = weights.masked_fill(mask[:,None,:]==0, -1e-6)
+        weights = weights.masked_fill(mask[:,None,:]==0, -1e6)
         weights = self.softmax(weights)
         x_sum = torch.sum(values * weights, dim=-1) # Attention-weighted pooling
         x_max, _ = torch.max(values, dim=-1) # Max pooling
