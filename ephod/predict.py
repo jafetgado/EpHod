@@ -46,7 +46,9 @@ def parse_arguments():
     parser.add_argument('--verbose', default=1, type=int,
                         help='Whether to print out prediction progress to terminal')
     parser.add_argument('--save_attention_weights', default=0, type=int,
-                        help="Whether to write EpHod attention weights for each sequence")
+                        help="Whether to write light attention weights for each sequence")
+    parser.add_argument('--attention_mode', default='average', type=str,
+                        help="Either 'average' or 'max'. How to derive Lx1 weights from Lx1280 tensor")
     parser.add_argument('--save_embeddings', default=0, type=int,
                         help="Whether to save 2560-dim EpHod embeddings for each sequence")
     args = parser.parse_args()
@@ -58,12 +60,18 @@ def parse_arguments():
 
 
 
-def write_attention_weights(accs, seqs, attention_weights, attention_dir):
+def write_attention_weights(args, accs, seqs, attention_weights, attention_dir):
     '''Write attention weights for each sequence'''
     
     for i, (acc,seq) in enumerate(zip(accs, seqs)):
         seqlen = len(seq)
         weights = attention_weights[i,:,:seqlen].to('cpu').detach().numpy()
+        if args.attention_mode == 'average':
+            weights = weights.mean(axis=0).transpose()
+        elif args.attention_mode == 'max':
+            weights = weights.max(axis=0).transpose()
+        else:
+            raise ValueError("attention_mode must be either 'average' or 'max'")
         weights = pd.DataFrame(weights.transpose(), index=list(seq))
         weights.to_csv(f'{attention_dir}/{acc}.csv')
     
@@ -172,7 +180,8 @@ def main():
                 all_ypred.extend(ypred.to('cpu').detach().numpy())
                 all_emb_ephod.extend(emb_ephod.to('cpu').detach().numpy())
                 if args.save_attention_weights:
-                    _ = write_attention_weights(accs, seqs, attention_weights, attention_dir)
+                    _ = write_attention_weights(args, accs, seqs, attention_weights,
+                                                attention_dir)
                 
         if args.save_embeddings:
             all_emb_ephod = pd.DataFrame(np.array(all_emb_ephod), index=accessions)
