@@ -32,8 +32,6 @@ def download_models():
     
     
     
-    
-    
 def torchActivation(activation='elu'):
     '''Return an activation function from torch.nn'''
 
