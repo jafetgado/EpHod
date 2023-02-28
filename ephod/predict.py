@@ -129,7 +129,7 @@ def main():
         os.makedirs(args.save_dir)
         
     # Prediction output file
-    phout_file = f'{args.save_dir}/{args.csv_name}.csv'
+    phout_file = f'{args.save_dir}/{args.csv_name}'
     
 
     if args.aac_svr:

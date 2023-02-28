@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from models.utils import torchActivation
-from models.attention_models import ResidualDense
+from models.fnn import FeedForwardNetWork
 
 
 
@@ -59,12 +59,11 @@ class ConvNet(nn.Module):
         
         # Residual dense layers
         self.flatsize = start_conv_channel * input_length
-        self.residual_dense = ResidualDense(input_dim=self.flatsize,
-                                            dense_dim=dense_dim,
-                                            num_layers=num_dense_layers,
-                                            dropout=dense_dropout,
+        self.residual_dense = FeedForwardNetwork(input_dim=self.flatsize, 
+        hidden_dims=[dense_dim] * num_dense_layers,
+        dropout=dense_dropout,
                                             activation=activation,
-                                            output_dim=1, 
+                                            residual=True, 
                                             random_seed=random_seed)
 
 
