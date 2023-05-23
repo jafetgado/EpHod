@@ -8,6 +8,7 @@ Usage
 -------------
 
 1. Clone repository and install conda environment
+
 .. code:: shell-session
 
     git clone https://github.com/jafetgado/EpHod.git
@@ -19,6 +20,7 @@ Usage
     	
 	
 2. Predict pHopt with EpHod language (needs gpu)
+
 .. code:: shell-session
 
     python ./ephod/predict.py \
@@ -35,6 +37,7 @@ Usage
     
 Or predict with a traditional regression model (support vector regression with amino acid composition)
 This is less accurate but a very fast estimation for wild type enzymes with CPU
+
 .. code:: shell-session
 
     python ./ephod/predict.py \
