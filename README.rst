@@ -26,7 +26,7 @@ Usage
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
-        --csv_name predictions.csv \
+        --csv_name predictions_ephod.csv \
         --batch_size 8 \
         --verbose 1 \
         --save_attention_weights 0 \
@@ -43,7 +43,7 @@ This is less accurate but a very fast estimation for wild type enzymes with CPU
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
-        --csv_name prediction.csv \
+        --csv_name predictions_svr.csv \
         --aac_svr 1 \
         --verbose 1 
 ..
