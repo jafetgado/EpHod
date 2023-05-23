@@ -35,7 +35,7 @@ Usage
 ..
   
     
-Or predict with a traditional regression model (support vector regression with amino acid composition)
+3. Alternatively (in place of No. 2), predict with a traditional regression model (support vector regression with amino acid composition).
 This is less accurate but a very fast estimation for wild type enzymes with CPU
 
 .. code:: shell-session
