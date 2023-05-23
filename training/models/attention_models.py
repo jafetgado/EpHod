@@ -22,7 +22,8 @@ from models.fnn import FeedForwardNetwork
 
 class AttentionTopModel(nn.Module):
     '''
-    Class to implement an attention top model to predict a property from embeddings.
+    Class to implement a top model based on LAT architecture to predict a property from 
+    embeddings.
     
         
 
@@ -302,5 +303,110 @@ class DilatedConvTopModel(nn.Module):
         y, z = self.dense_layers(x)
 
         
-        return [y, z, x_weights]                
+        return [y, z, x_weights]     
+
+
+
+
+
+
+
+
+    
+class ResidualDense(nn.Module):
+    '''A single dense layer with residual connection'''
+    
+    def __init__(self, dim=2560, dropout=0.1, activation='elu', random_seed=0):
+        
+        super(ResidualDense, self).__init__()
+        _ = torch.manual_seed(random_seed)
+        self.dense = nn.Linear(dim, dim)
+        self.batchnorm = nn.BatchNorm1d(dim)
+        self.activation = torchActivation(activation)
+        self.dropout = nn.Dropout(dropout)
+
+
+    def forward(self, x):
+
+        x0 = x
+        x = self.dense(x)
+        x = self.batchnorm(x)
+        x = self.activation(x)        
+        x = self.dropout(x)
+        x = x0 + x
+        
+        return x
+
+
+
+
+
+
+
+
+class LightAttention(nn.Module):
+    '''Convolution model with attention to learn pooled representations from embeddings'''
+
+    def __init__(self, dim=1280, kernel_size=7, random_seed=0):
+        
+        super(LightAttention, self).__init__()
+        _ = torch.manual_seed(random_seed)        
+        samepad = kernel_size // 2
+        self.values_conv = nn.Conv1d(dim, dim, kernel_size=kernel_size, padding=samepad)
+        self.weights_conv = nn.Conv1d(dim, dim, kernel_size=kernel_size, padding=samepad)
+        self.softmax = nn.Softmax(dim=-1)
+    
+    
+    def forward(self, x, mask=None):
+
+        if mask is None:
+            mask = torch.ones(x.shape[0], x.shape[2], dtype=torch.int32)  # Don't mask out
+        values = self.values_conv(x)
+        values = values.masked_fill(mask[:,None,:]==0, -1e6)
+        weights = self.weights_conv(x)
+        weights = weights.masked_fill(mask[:,None,:]==0, -1e6)
+        weights = self.softmax(weights)
+        x_sum = torch.sum(values * weights, dim=-1) # Attention-weighted pooling
+        x_max, _ = torch.max(values, dim=-1) # Max pooling
+        x = torch.cat([x_sum, x_max], dim=1)
+        
+        return x, weights
+    
+    
+    
+
+
+
+
+
+class ResidualLightAttention(nn.Module):
+    '''Model consisting of light attention followed by residual dense layers'''
+    
+    def __init__(self, dim=1280, kernel_size=9, dropout=0.5,
+                 activation='relu', res_blocks=4, random_seed=0):
+
+        super(ResidualLightAttention, self).__init__()
+        torch.manual_seed(random_seed)
+        self.light_attention = LightAttention(dim, kernel_size, random_seed)
+        self.batchnorm = nn.BatchNorm1d(2 * dim)                
+        self.dropout = nn.Dropout(dropout)        
+        self.residual_dense = nn.ModuleList()        
+        for i in range(res_blocks):
+            self.residual_dense.append(
+                ResidualDense(2 * dim, dropout, activation, random_seed)
+                )
+        self.output = nn.Linear(2 * dim, 1)
+        
+        
+    def forward(self, x, mask=None):
+
+        x, weights = self.light_attention(x, mask)
+        x = self.batchnorm(x)
+        x = self.dropout(x)
+        for layer in self.residual_dense:
+            x = layer(x)
+        y = self.output(x).flatten()
+        
+        return [y, x, weights]
+                   
     

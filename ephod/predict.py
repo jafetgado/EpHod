@@ -20,9 +20,12 @@ import sys
 sys.path.insert(1, './')
 import ephod.utils as utils
 import ephod.models as models
+print = models.print # Flush printing
 
 import warnings
 warnings.filterwarnings('ignore')
+
+
 
 
 
@@ -60,6 +63,8 @@ def parse_arguments():
 
 
 
+
+
 def write_attention_weights(args, accs, seqs, attention_weights, attention_dir):
     '''Write attention weights for each sequence'''
     
@@ -76,6 +81,8 @@ def write_attention_weights(args, accs, seqs, attention_weights, attention_dir):
         weights.to_csv(f'{attention_dir}/{acc}.csv')
     
         
+
+
 
 
 
@@ -104,6 +111,8 @@ def predict_aac_svr(args, accessions, sequences):
  
     
     
+
+
     
 def main():
     '''Run inference with EpHod model'''

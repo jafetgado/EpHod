@@ -137,11 +137,11 @@ class DilatedConvNet(nn.Module):
         # Residual perceptive attention on top of 
         # Top dense model on average and max pooled tensor
         self.dense = FeedForwardNetwork(input_dim=(2 * conv_channel),
-        hidden_dims=[dense_dim] * num_dense_layers,
-        dropout=dense_dropout,
-                                            activation=activation,
-                                            residual=True, 
-                                            random_seed=random_seed)
+        								hidden_dims=[dense_dim] * num_dense_layers,
+        								dropout=dense_dropout,
+        								activation=activation,
+        								residual=True, 
+        								random_seed=random_seed)
         
         
 

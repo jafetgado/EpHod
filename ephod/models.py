@@ -7,6 +7,7 @@ Author: Japheth Gado
 
 import subprocess
 import os
+import builtins
 
 import torch
 import torch.nn as nn
@@ -19,15 +20,41 @@ import ephod.utils as utils
 
 
 
+
+
+
+def print(*args, **kwargs):
+    '''Custom print function to always flush output when verbose'''
+
+    builtins.print(*args, **kwargs, flush=True)
+    
+    
+
+
+
+
+
+
 def download_models():
     '''Download saved models (EpHod and AAC-SVR)'''
 
     glink = 'https://drive.google.com/drive/folders/'\
             '138cnx4hFrzNODGK6A_yd9wo7WupKpSjI?usp=share_link/'
     cmd = f"gdown --folder {glink}"
+    print('Downloading RLAT from Google drive with gdown')
     _ = subprocess.call(cmd, shell=True) # Download model from google drive 
-    cmd = "mv -f ./saved_models ./ephod/"
+    this_dir, this_filename = os.path.split(__file__)
+    save_path = os.path.join(this_dir, 'saved_models')    
+    cmd = f"mv -f ./saved_models {save_path}/"
+    print(cmd)
+    print(f'Moving RLAT to {save_path}')
     _ = subprocess.call(cmd, shell=True)
+    error_msg = "RLAT model failed to download!"
+    assert os.path.exists(f"{save_path}/RLAT/RLAT.pt"), error_msg
+    
+    
+    
+    
     
     
     
@@ -55,6 +82,8 @@ def torchActivation(activation='elu'):
 
 
 
+
+
 def count_parameters(model):
     '''Return a count of parameters and tensor shape of PyTorch model''' 
     
@@ -69,6 +98,8 @@ def count_parameters(model):
 
     return counted
     
+
+
 
 
 
@@ -97,6 +128,8 @@ class ResidualDense(nn.Module):
         x = x0 + x
         
         return x
+
+
 
 
 
@@ -135,6 +168,8 @@ class LightAttention(nn.Module):
 
 
 
+
+
 class ResidualLightAttention(nn.Module):
     '''Model consisting of light attention followed by residual dense layers'''
     
@@ -164,6 +199,8 @@ class ResidualLightAttention(nn.Module):
         y = self.output(x).flatten()
         
         return [y, x, weights]
+
+
 
 
 

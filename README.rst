@@ -6,16 +6,21 @@ enzymes (pHopt).
 
 Usage 
 -------------
+
+1. Clone repository and install conda environment
 .. code:: shell-session
 
-    # Clone repository and install conda environment
     git clone https://github.com/jafetgado/EpHod.git
     cd EpHod
     export PYTHONPATH="$(pwd)"
     conda env create -f ./env.yml -p ./env
-    conda activate ./env	
+    conda activate ./env
+..
+    	
 	
-    # Predict pHopt with EpHod language (needs gpu)
+2. Predict pHopt with EpHod language (needs gpu)
+.. code:: shell-session
+
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
@@ -25,10 +30,13 @@ Usage
         --save_attention_weights 0 \
         --attention_mode "None" \
         --save_embeddings 0 
+..
+  
     
-    # Or predict with a simple regression model 
-    # (support vector regression with amino acid composition)
-    # Less accurate but a very fast estimation for wild type enzymes with CPU
+Or predict with a traditional regression model (support vector regression with amino acid composition)
+This is less accurate but a very fast estimation for wild type enzymes with CPU
+.. code:: shell-session
+
     python ./ephod/predict.py \
         --fasta_path "./example/sequences.fasta" \
         --save_dir ./example \
@@ -43,4 +51,4 @@ Citation
 ----------
 If you find EpHod useful, please cite the following:
 
-Gado J.E., Shaw A.Y., et al, 2023. "Predicting enzyme optimum pH with deep language models".
+Gado J.E., Knotts M., Shaw A.Y., et al, 2023. "Deep learning prediction of enzyme optimum pH".
