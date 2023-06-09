@@ -60,11 +60,11 @@ class ConvNet(nn.Module):
         # Residual dense layers
         self.flatsize = start_conv_channel * input_length
         self.residual_dense = FeedForwardNetwork(input_dim=self.flatsize, 
-        									     hidden_dims=[dense_dim] * num_dense_layers,
-        										 dropout=dense_dropout,
-                                            	 activation=activation,
-                                           		 residual=True, 
-	                                            random_seed=random_seed)
+                                                 hidden_dims=[dense_dim] * num_dense_layers,
+                                                 dropout=dense_dropout,
+                                                 activation=activation,
+                                                 residual=True, 
+                                                 random_seed=random_seed)
 
 
     def forward(self, x):
