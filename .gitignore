@@ -2,4 +2,5 @@
 **/*~
 env
 gitcommands.sh
-eagle_run_ephod.sh
+run_ephod.sh
+env
