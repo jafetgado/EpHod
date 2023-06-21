@@ -130,6 +130,19 @@ def main():
     numseqs = len(sequences)
     if args.verbose:
         print(f'Reading {numseqs} sequences from {args.fasta_path}')
+        
+    
+    # Check sequence lengths
+    lengths = np.array([len(seq) for seq in sequences])
+    long_count = np.sum(lengths > 1022)
+    warning = f"{long_count} sequences are longer than 1022 residues and will be omitted"
+    
+    # Omit sequences longer than 1023
+    if max(lengths) >= 1022:
+        print(warning)
+        locs = np.argwhere(lengths < 1022).flatten()
+        headers, sequences, accessions = [array[locs] for array in \
+                                          (headers, sequences, accessions)]
     
     
     # Prepare files/directories for writing predictions
