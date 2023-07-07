@@ -126,7 +126,7 @@ def main():
     accessions = [head.split()[0] for head in headers]
     headers, sequences, accessions = [np.array(item) for item in \
                                       (headers, sequences, accessions)]
-    assert len(accessions) == len(sequences), 'Fasta file has unequal headers and sequences'
+    assert len(accessions) == len(headers) == len(sequences), 'Fasta file has unequal headers and sequences'
     numseqs = len(sequences)
     if args.verbose:
         print(f'Reading {numseqs} sequences from {args.fasta_path}')
@@ -134,15 +134,16 @@ def main():
     
     # Check sequence lengths
     lengths = np.array([len(seq) for seq in sequences])
-    long_count = np.sum(lengths > 1022)
+    long_count = np.sum(lengths >= 1022)
     warning = f"{long_count} sequences are longer than 1022 residues and will be omitted"
     
-    # Omit sequences longer than 1023
+    # Omit sequences longer than 1022
     if max(lengths) >= 1022:
         print(warning)
         locs = np.argwhere(lengths < 1022).flatten()
         headers, sequences, accessions = [array[locs] for array in \
                                           (headers, sequences, accessions)]
+        numseqs = len(sequences)
     
     
     # Prepare files/directories for writing predictions
