@@ -19,7 +19,8 @@ Weights of EpHod model and training datasets are available at `Zenodo <https://d
 Usage 
 -------------
 
-1. Clone repository and install conda environment. Installation with the required environment takes roughly four minutes.
+1. Clone repository and install conda environment. Installation with the 
+required environment takes roughly four minutes.
 
 .. code:: shell-session
 
@@ -31,8 +32,12 @@ Usage
 ..
     	
 	
-2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and softmax weight values (attention weights), as well as final EpHod layer embeddings (2560-dim) are saved in ``./example/``.
-Pass 0 to ``--save_attention_weights`` and ``--save_embeddings`` to avoid writing the weights and embeddings output. 
+2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and 
+softmax weight values (attention weights), as well as final EpHod layer embeddings 
+(2560-dim) are saved in ``./example/``.Pass 0 to ``--save_attention_weights`` 
+and ``--save_embeddings`` to avoid writing the weights and embeddings output. 
+Besides downloading model weights, which may take several minutues, prediction 
+takes ~7 seconds/sequence on a CPU and ~0.1 seconds/sequence on a GPU.
 
 .. code:: shell-session
 
@@ -48,8 +53,9 @@ Pass 0 to ``--save_attention_weights`` and ``--save_embeddings`` to avoid writin
 ..
   
     
-3. Alternatively (in place of No. 2), predict with a traditional regression model (support vector regression with amino acid composition).
-This is less accurate but a very fast estimation for wild type enzymes with CPU
+3. Alternatively (in place of No. 2), predict with a support vector regression
+model based on the amino acid composition (AAC-SVR). This may be less accurate 
+but is a very fast estimation with CPU.
 
 .. code:: shell-session
 

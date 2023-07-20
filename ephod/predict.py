@@ -11,6 +11,7 @@ from sklearn.svm import SVR
 import torch
 
 import tqdm
+import time
 import argparse
 import joblib
 import os
@@ -77,7 +78,7 @@ def write_attention_weights(args, accs, seqs, attention_weights, attention_dir):
             weights = weights.max(axis=0).transpose()
         else:
             raise ValueError("attention_mode must be either 'average' or 'max'")
-        weights = pd.DataFrame(weights.transpose(), index=list(seq))
+        weights = pd.DataFrame(weights.transpose(), index=list(seq), columns=['weights'])
         weights.to_csv(f'{attention_dir}/{acc}.csv')
     
         
@@ -134,13 +135,13 @@ def main():
     
     # Check sequence lengths
     lengths = np.array([len(seq) for seq in sequences])
-    long_count = np.sum(lengths >= 1022)
+    long_count = np.sum(lengths > 1022)
     warning = f"{long_count} sequences are longer than 1022 residues and will be omitted"
     
     # Omit sequences longer than 1022
-    if max(lengths) >= 1022:
+    if max(lengths) > 1022:
         print(warning)
-        locs = np.argwhere(lengths < 1022).flatten()
+        locs = np.argwhere(lengths <= 1022).flatten()
         headers, sequences, accessions = [array[locs] for array in \
                                           (headers, sequences, accessions)]
         numseqs = len(sequences)
@@ -215,8 +216,7 @@ def main():
         
         
     # Save predictions
-    all_ypred = pd.DataFrame({'Accessions': accessions, 
-                              'pHopt': all_ypred})
+    all_ypred = pd.DataFrame(all_ypred, index=accessions, columns=['pHopt'])
     all_ypred.to_csv(phout_file)
     
     
