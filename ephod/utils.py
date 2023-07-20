@@ -1,5 +1,6 @@
 """
 Utility functions for processing and analysis
+Author: Japheth Gado
 """
 
 

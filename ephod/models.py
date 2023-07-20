@@ -15,6 +15,7 @@ from torch.nn.parallel import DataParallel
 import esm
 
 import ephod.utils as utils
+import requests
 
 
 
@@ -35,19 +36,50 @@ def print(*args, **kwargs):
 
 
 
-def download_models():
+def download_models(get_from='zenodo'):
     '''Download saved models (EpHod and AAC-SVR)'''
+    
+    if get_from == 'googledrive':
+        
+        # Download from Google drive
+        glink = "https://drive.google.com/drive/folders/138cnx4hFrzNODGK6A_yd9wo7WupKpSjI?usp=share_link/"
+        cmd = f"gdown --folder {glink}"
+        print('Downloading EpHod models from Google drive with gdown\n')
+        _ = subprocess.call(cmd, shell=True) # Download model from google drive 
 
-    glink = 'https://drive.google.com/drive/folders/'\
-            '138cnx4hFrzNODGK6A_yd9wo7WupKpSjI?usp=share_link/'
-    cmd = f"gdown --folder {glink}"
-    print('Downloading RLAT from Google drive with gdown\n')
-    _ = subprocess.call(cmd, shell=True) # Download model from google drive 
+    elif get_from == 'zenodo':
+        
+        # Download from Zenodo
+        zlink = "https://zenodo.org/record/8011249/files/saved_models.tar.gz?download=1"
+        print('Downloading EpHod models from Zenodo with requests\n')
+        response = requests.get(zlink, stream=True)
+        if response.status_code == 200:
+            with requests.get(zlink, stream=True) as r:
+                r.raise_for_status()
+                with open("saved_models.tar.gz", 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        if chunk:
+                            f.write(chunk)
+        else:
+            print(f"Request failed with status code {response.status_code}")
+
+    
+    else: 
+        raise ValueError(f"Value of get_from ({get_from}) must be 'googledrive' or 'zenodo'")
+        
+    
+    # Move downloaded models to proper location
     this_dir, this_filename = os.path.split(__file__)
-    save_path = os.path.join(this_dir, 'saved_models')    
+    if get_from == 'zenodo':
+        # Untar downloaded file
+        tarfile = os.path.join(this_dir, 'saved_models') 
+        _ = subprocess.call(f"tar -xvzf {tarfile}", shell=True)
+        _ = subprocess.call(f"rm -rfv {tarfile}", shell=True)
+    
+    save_path = os.path.join(this_dir, 'saved_models') 
     cmd = f"mv -f ./saved_models {save_path}/"
     print(cmd)
-    print(f'\nMoving RLAT to {save_path}')
+    print(f'\nMoving downloaded models to {save_path}')
     _ = subprocess.call(cmd, shell=True)
     error_msg = "RLAT model failed to download!"
     assert os.path.exists(f"{save_path}/RLAT/RLAT.pt"), error_msg
