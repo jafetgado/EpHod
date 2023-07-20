@@ -1,13 +1,15 @@
 **EpHod**
 ===============
 
-EpHod is a deep learning model to predict the optimum pH of enzymes (pHopt). 
-EpHod uses a  light-attention top model with 49 million parameters on the 
-protein language model, ESM-1v, with 690 million parameters, and was trained 
-on 1.9 million proteins with optimal environment pH (pHenv) followed by 9,855 
-enzymes with of catalytic optimum pH (pHopt). 
+EpHod is a deep-learning model to predict the optimum pH of enzymes (pHopt). 
+The model architecture is  a light-attention model with 49 million parameters 
+on top of the protein language model, ESM-1v, with 690 million parameters. EpHod 
+was trained on 1.9 million proteins with optimal environment pH (pHenv) followed 
+by 9,855 enzymes with of catalytic optimum pH (pHopt). 
 
-Dependencies are in `env.yml`, and we recommend using a conda environment.
+We recommend using a conda environment. 
+
+Dependencies are in `env.yml`.
 
 Weights of EpHod model and training datasets are available at `Zenodo <https://doi.org/10.5281/zenodo.8011249>`__.
 
@@ -29,7 +31,8 @@ Usage
 ..
     	
 	
-2. Predict pHopt with EpHod language (needs gpu). Predicted output is a csv file with accession codes and predicted pHopt in columns.
+2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and softmax weight values (attention weights), as well as final EpHod layer embeddings (2560-dim) are saved in `example/`.
+Pass 0 to `--save_attention_weights` and `--save_embeddings` to avoid writing the weights and embeddings output. 
 
 .. code:: shell-session
 
@@ -64,4 +67,4 @@ Citation
 ----------
 If you find EpHod useful, please cite the following:
 
-Gado J.E., Knotts M., Shaw A.Y., et al, 2023. "Deep learning prediction of enzyme optimum pH".
+Gado J.E., Knotts M., Shaw A.Y., et al, 2023. "Deep learning prediction of enzyme optimum pH". `bioRxiv <https://www.biorxiv.org/content/10.1101/2023.06.22.544776v1.abstract>`__.
