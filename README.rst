@@ -2,7 +2,7 @@
 ===============
 
 EpHod is a deep-learning model to predict the optimum pH of enzymes (pHopt). 
-The model architecture is  a light-attention model with 49 million parameters 
+The model architecture consists of  a light-attention module with 49 million parameters 
 on top of the protein language model, ESM-1v, with 690 million parameters. EpHod 
 was trained on 1.9 million proteins with optimal environment pH (pHenv) followed 
 by 9,855 enzymes with of catalytic optimum pH (pHopt). 
@@ -31,7 +31,7 @@ Usage
 ..
     	
 	
-2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and softmax weight values (attention weights), as well as final EpHod layer embeddings (2560-dim) are saved in `example/`.
+2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and softmax weight values (attention weights), as well as final EpHod layer embeddings (2560-dim) are saved in `./example/`.
 Pass 0 to `--save_attention_weights` and `--save_embeddings` to avoid writing the weights and embeddings output. 
 
 .. code:: shell-session
