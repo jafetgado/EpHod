@@ -31,8 +31,8 @@ Usage
 ..
     	
 	
-2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and softmax weight values (attention weights), as well as final EpHod layer embeddings (2560-dim) are saved in `./example/`.
-Pass 0 to `--save_attention_weights` and `--save_embeddings` to avoid writing the weights and embeddings output. 
+2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and softmax weight values (attention weights), as well as final EpHod layer embeddings (2560-dim) are saved in ``./example/``.
+Pass 0 to ``--save_attention_weights`` and ``--save_embeddings`` to avoid writing the weights and embeddings output. 
 
 .. code:: shell-session
 
