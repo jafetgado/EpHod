@@ -32,7 +32,7 @@ required environment takes roughly four minutes.
 ..
     	
 	
-2. Predict pHopt with EpHod language (needs gpu). Predicted pHopt values, and 
+2. Predict pHopt with EpHod (needs gpu). Predicted pHopt values, and 
 softmax weight values (attention weights), as well as final EpHod layer embeddings 
 (2560-dim) are saved in ``./example/``.Pass 0 to ``--save_attention_weights`` 
 and ``--save_embeddings`` to avoid writing the weights and embeddings output. 
@@ -53,8 +53,8 @@ takes ~7 seconds/sequence on a CPU and ~0.1 seconds/sequence on a GPU.
 ..
   
     
-3. Alternatively (in place of No. 2), predict with a support vector regression
-model based on the amino acid composition (AAC-SVR). This may be less accurate 
+3. Alternatively, predict pHopt with a support vector regression model 
+based on the amino acid composition (AAC-SVR). This may be less accurate 
 but is a very fast estimation with CPU.
 
 .. code:: shell-session
