@@ -36,8 +36,9 @@ required environment takes roughly four minutes.
 softmax weight values (attention weights), as well as final EpHod layer embeddings 
 (2560-dim) are saved in ``./example/``.Pass 0 to ``--save_attention_weights`` 
 and ``--save_embeddings`` to avoid writing the weights and embeddings output. 
-Besides downloading model weights, which may take several minutues, prediction 
-takes ~7 seconds/sequence on a CPU and ~0.1 seconds/sequence on a GPU.
+Besides downloading model weights, which may take several minutues, with a batch 
+size of 1, prediction takes ~7 seconds/sequence on a CPU and ~0.1 seconds/sequence 
+on a GPU.
 
 .. code:: shell-session
 
