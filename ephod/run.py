@@ -9,6 +9,7 @@ from sklearn.svm import SVR
 import torch
 from torch.nn.parallel import DataParallel
 import torch.nn as nn
+import random
 import tqdm
 import argparse
 import joblib
@@ -36,7 +37,6 @@ def parse_arguments():
                         help='Directory to which prediction results will be written')
     parser.add_argument('--csv_name', type=str, default='prediction.csv', 
                         help='Name of csv file to which prediction results will be written')
-    parser.add_argument('--batch_size', type=int, default=8, help='Batch size used in inference')
     parser.add_argument('--verbose', default=1, type=int,
                         help='Whether to print out prediction progress to terminal')
     parser.add_argument('--save_attention_weights', default=0, type=int,
@@ -104,18 +104,32 @@ def replace_noncanonical(seq, replace_char='X'):
 
 class EpHodModel():
     
-    def __init__(self):
+    def __init__(self, seed=0):
 
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         if self.device != 'cuda':
             print('WARNING: You are not using a GPU. Inference will be slow')
+        self.set_seed(seed=seed)
         self.esm1v_model, self.esm1v_batch_converter = self.load_ESM1v_model()
         self.svr_model, self.svr_stats = self.load_SVR_model()
         self.rlat_model = self.load_RLAT_model()
-        _ = self.esm1v_model.eval()
-        _ = self.rlat_model.eval()
-        
+        self.esm1v_model.eval()
+        self.rlat_model.eval()
+
     
+    def set_seed(self, seed):
+    
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        if self.device == 'cuda':
+            torch.cuda.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        
+        
+        
     def load_ESM1v_model(self):
         '''Return pretrained ESM1v model weights and batch converter'''
         
@@ -136,7 +150,6 @@ class EpHodModel():
         emb = self.esm1v_model(batch_tokens, repr_layers=[33], return_contacts=False)
         emb = emb["representations"][33]
         emb = emb.transpose(2,1) # From (batch, seqlen, features) to (batch, features, seqlen)
-        emb = emb.to(self.device)
 
         return emb
     
@@ -144,12 +157,12 @@ class EpHodModel():
     def load_RLAT_model(self):
         '''Return residual light attention top model'''
         
-        model = nn_models.ResidualLightAttention(dim=1280, kernel_size=7, dropout=0.1, res_blocks=4, activation='elu')
-        model = DataParallel(model)
+        model = nn_models.ResidualLightAttention(dim=1280, kernel_size=7, dropout=0.0, res_blocks=4, activation='elu')
+        model = model.to(self.device)
         url = 'https://zenodo.org/records/14252615/files/ESM1v-RLATtr.pt?download=1'
-        model_dict = torch.hub.load_state_dict_from_url(url, progress=False, map_location="cpu")
+        model_dict = torch.hub.load_state_dict_from_url(url, progress=False, map_location=self.device)
+        model_dict = {key[len('module.'):]: value for key, value in model_dict.items()} # Remove DataParallel suffix
         model.load_state_dict(model_dict)
-        model.to(self.device)
 
         return model
 
@@ -164,9 +177,9 @@ class EpHodModel():
         return svr_model, svr_stats
         
     
-    def batch_predict(self, accs, seqs):
-        '''Predict pHopt with EpHod on a batch of sequences'''
-
+    def predict(self, accs, seqs):
+        '''Predict pHopt of sequences with EpHod'''
+        
         # Get ESM1v embeddings and run RLATtr model
         emb_esm1v = self.get_ESM1v_embeddings(accs, seqs)
         maxlen = emb_esm1v.shape[-1]
@@ -178,9 +191,9 @@ class EpHodModel():
         rlat_pred, rlat_emb, rlat_attn = [item.cpu().numpy() for item in out]
     
         # Run SVR
-        emb_pool = emb_esm1v.numpy().mean(axis=-1) # (batch, features, seqlen)
+        emb_pool = emb_esm1v.cpu().numpy().mean(axis=-1) # (batch, features, seqlen)
         emb_pool = (emb_pool - self.svr_stats[:,0]) / (self.svr_stats[:,1] + 1e-8) # Normalize with means/std.dev
-        svr_pred = self.svr_model.predict(emb_pool)
+        svr_pred = self.svr_model.predict(emb_pool) # Note that batch size > 1 affects this pooling
         ensemble_pred = (rlat_pred + svr_pred) / 2
         outdict = dict(rlat_pred=rlat_pred, rlat_emb=rlat_emb, rlat_attn=rlat_attn, 
                        svr_pred=svr_pred, ensemble_pred=ensemble_pred)
@@ -233,7 +246,8 @@ def main():
         print(f'Device is {ephod_model.device}')
 
     # Batch prediction
-    num_batches = int(np.ceil(numseqs / args.batch_size))
+    batch_size = 1 # Use batch_size of 1 
+    num_batches = int(np.ceil(numseqs / batch_size))
     all_ypred, all_emb_ephod = np.empty((0,3)), np.empty((0, 2560))
     
     with torch.no_grad():
@@ -244,14 +258,13 @@ def main():
         for batch_step in batches:
             
             # Batch sequences
-            start_idx = batch_step * args.batch_size
-            stop_idx = (batch_step + 1) * args.batch_size
+            start_idx = batch_step * batch_size
+            stop_idx = (batch_step + 1) * batch_size
             accs = accessions[start_idx : stop_idx] 
             seqs = sequences[start_idx : stop_idx]
             
             # Predict with EpHod model
-            # dict_keys(['rlat_pred', 'rlat_emb', 'rlat_attn', 'svr_pred', 'ensemble_pred'])
-            out = ephod_model.batch_predict(accs, seqs)
+            out = ephod_model.predict(accs, seqs) # dict_keys(['rlat_pred', 'rlat_emb', 'rlat_attn', 'svr_pred', 'ensemble_pred'])
             all_ypred = np.vstack((all_ypred, np.array([out['rlat_pred'], out['svr_pred'], out['ensemble_pred']]).transpose()))
             all_emb_ephod = np.vstack((all_emb_ephod, out['rlat_emb']))
             if args.save_attention_weights:

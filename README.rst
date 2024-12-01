@@ -34,13 +34,12 @@ Besides downloading model weights, which may take several minutues, with a batch
 .. code:: shell-session
 
     python ./ephod/run.py \
-        --fasta_path "./example/sequences.fasta" \
+        --fasta_path "./example/test_sequences.fasta" \
         --save_dir ./example \
         --csv_name prediction.csv \
-        --batch_size 1 \
         --verbose 1 \
-        --save_attention_weights 1 \
-        --save_embeddings 1 
+        --save_attention_weights 0 \
+        --save_embeddings 0 
 ..
 
 
