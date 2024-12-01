@@ -1,5 +1,6 @@
 **/.DS_store
 **/*~
+.ipynb_checkpoints
 backup
 env
 gitcommands.sh
