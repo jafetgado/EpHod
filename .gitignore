@@ -2,8 +2,8 @@
 **/*~
 **/.ipynb_checkpoints
 *.csv
+*.ipynb
 backup
 env
 gitcommands.sh
 run_ephod.sh
-test.ipynb

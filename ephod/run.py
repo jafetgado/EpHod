@@ -246,7 +246,7 @@ def main():
         print(f'Device is {ephod_model.device}')
 
     # Batch prediction
-    batch_size = 1 # Use batch_size of 1 
+    batch_size = 1 # Use batch_size of 1, since >1 will lead to wrong results in pooling (line 194)
     num_batches = int(np.ceil(numseqs / batch_size))
     all_ypred, all_emb_ephod = np.empty((0,3)), np.empty((0, 2560))
     
