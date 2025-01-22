@@ -223,6 +223,7 @@ def main():
     if max(lengths) > 1022:
         long_count = np.sum(lengths > 1022)
         warning = f"{long_count} sequences are longer than 1022 residues and will be truncated"
+        print(warning)
         sequences = np.asarray([item[:1022] for item in sequences])    
     
     # Directory to write pHopt predictions
