@@ -48,5 +48,5 @@ Citation
 ----------
 If you find EpHod useful, please cite the following:
 
-Gado, J.E., Knotts, M., Shaw, A.Y., *et al.*, 2024. "Machine learning prediction of enzyme optimum pH." *Nature Machine Intelligence*. `https://doi.org/10.1038/s42256-025-01026-6 <https://doi.org/10.1038/s42256-025-01026-6>`__.
+Gado J.E., Knotts M., Shaw A.Y., et al, 2024. "Machine learning prediction of enzyme optimum pH". `Nat. Mach. Intell <https://doi.org/10.1038/s42256-025-01026-6>`__.
 
